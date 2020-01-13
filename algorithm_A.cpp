@@ -234,6 +234,17 @@ void algorithm_A(Board board, Player player, int index[]){
 
 };
 
+M_Board move(M_Board board, Grid pos, Player player) {
+    char playerColor = player.get_color();
+    
+    board.place_orb(pos.x, pos.y, &player);
+
+    //board.add_orb(pos.x, pos.y, playerColor);
+    //board.cell_chain_reaction(player);
+    
+    return board;
+}
+
 int score(M_Board board, Player player) {
     int sc = 0;
     int my_orbs = 0, enemy_orbs = 0;
