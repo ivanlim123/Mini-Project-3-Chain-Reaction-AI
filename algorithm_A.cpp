@@ -231,8 +231,81 @@ void algorithm_A(Board board, Player player, int index[]){
     // cout << board.get_orbs_num(0, 0) << endl;
     // cout << board.get_cell_color(0, 0) << endl;
     // board.print_current_board(0, 0, 0);
-
+    
+    M_Board m_board(board);
+    pair <Grid, int> best_move = minimax(m_board, 2, 10, player);
+    index[0] = best_move.first.x;
+    index[1] = best_move.first.y;
 };
+
+int *bestn(M_Board board, Player player) {
+    int *conf = new int[100];
+    for(int i = 0; i < 100; i++) {
+        conf[i] = -10000;
+    }
+    char playerColor = player.get_color();
+    
+    for(int i = 0; i < ROW; i++) {
+        for(int j = 0; j < COL; j++) {
+            if(board.get_cell_color(i, j) == playerColor || board.get_cell_color(i, j) == 'w') {
+                Grid pos;
+                pos.Set(i, j);
+                conf[i*10+j] = score(move(board, pos, player), player);
+            }
+        }
+    }
+    return conf;
+}
+
+std::pair<Grid, int> minimax(M_Board board, int depth, int breadth, Player player) {
+    char playerColor = player.get_color();
+    char opponentColor = (playerColor == 'r') ? 'b' : 'r';
+    int *best_moves = bestn(board, player);
+    Grid best_pos[breadth];
+    int best_val[breadth];
+    Grid best_next_pos;
+    int best_next_val;
+    
+    for(int i = 0; i < breadth; i++) {
+        best_pos[i].Set(0, 0);
+        best_val[i] = -10000;
+    }
+    
+    for(int i = 0; i < 100; i++) {
+        if(i/10 > 4 || i%10 > 5) continue;
+        if(board.get_cell_color(i/10, i%10)==opponentColor) continue;
+        for(int j = 0; j < breadth; j++) {
+            if(best_moves[i] > best_val[j]) {
+                for(int k = breadth-1; k >= j+1; k--) {
+                    best_val[k] = best_val[k-1];
+                    best_pos[k].Set(best_pos[k-1].x, best_pos[k-1].y);
+                }
+                best_val[j] = best_moves[i];
+                best_pos[j].Set(i/10, i%10);
+                break;
+            }
+        }
+    }
+    delete []best_moves;
+    best_next_pos = best_pos[0];
+    best_next_val = score(move(board, best_next_pos, player), player);
+    
+    if(depth==1) {
+        return std::make_pair(best_next_pos, best_next_val);
+    }
+    
+    for(int i = 0; i < breadth; i++) {
+        M_Board b_new(move(board, best_pos[i], player));
+        pair <Grid, int> best_move = minimax(b_new, depth-1, breadth, player);
+        int val = best_move.second;
+        if(val > best_next_val) {
+            best_next_val = val;
+            best_next_pos = best_pos[i];
+        }
+    }
+    
+    return std::make_pair(best_next_pos, best_next_val);
+}
 
 M_Board move(M_Board board, Grid pos, Player player) {
     char playerColor = player.get_color();
