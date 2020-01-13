@@ -231,7 +231,7 @@ void algorithm_A(Board board, Player player, int index[]){
     // cout << board.get_orbs_num(0, 0) << endl;
     // cout << board.get_cell_color(0, 0) << endl;
     // board.print_current_board(0, 0, 0);
-    
+
     M_Board m_board(board);
     pair <Grid, int> best_move = minimax(m_board, 2, 10, player);
     index[0] = best_move.first.x;
@@ -335,12 +335,7 @@ int score(M_Board board, Player player) {
                     }
                     else {
                         if(board.get_cell_color(Neighbours[k].x, Neighbours[k].y) == opponentColor && board.get_orbs_num(Neighbours[k].x, Neighbours[k].y) == board.get_capacity(Neighbours[k].x, Neighbours[k].y)-1) {
-                            if(board.get_orbs_num(i, j) == board.get_capacity(i, j)-1) {
-                                //sc += board.get_capacity(Neighbours[k].x, Neighbours[k].y);
-                            }
-                            else {
-                                sc -= (5 - board.get_capacity(Neighbours[k].x, Neighbours[k].y));
-                            }
+                            sc -= (5 - board.get_capacity(Neighbours[k].x, Neighbours[k].y));
                             flag_not_vulnerable = false;
                         }
                     }
@@ -366,7 +361,7 @@ int score(M_Board board, Player player) {
             }
         }
     }
-    sc += my_orbs;
+    //sc += my_orbs;
     sc -= enemy_orbs;
     
     if(enemy_orbs==0 && my_orbs>1) {
