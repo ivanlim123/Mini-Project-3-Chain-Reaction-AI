@@ -113,7 +113,7 @@ void M_Board::cell_explode(int i, int j){
 
 bool M_Board::place_orb(int i, int j, Player * player){
     
-    if(index_range_illegal(i, j) || !placement_illegal(*player, cells[i][j])){
+    if(!index_range_illegal(i, j) && !placement_illegal(*player, cells[i][j])){
         int temp = cells[i][j].get_orbs_num();
         temp += 1;
         cells[i][j].set_orbs_num(temp);
@@ -226,12 +226,6 @@ std::pair<Grid, int> minimax(M_Board board, int depth, int breadth, Player playe
 
 
 void algorithm_A(Board board, Player player, int index[]){
-
-    // cout << board.get_capacity(0, 0) << endl;
-    // cout << board.get_orbs_num(0, 0) << endl;
-    // cout << board.get_cell_color(0, 0) << endl;
-    // board.print_current_board(0, 0, 0);
-
     M_Board m_board(board);
     pair <Grid, int> best_move = minimax(m_board, 2, 10, player);
     index[0] = best_move.first.x;
